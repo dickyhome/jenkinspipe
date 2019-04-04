@@ -1,0 +1,51 @@
+pipeline{
+    agent {
+        node {
+            label 'jenkins-worker1'
+        }
+    }
+
+    //Build Module Master Data
+    stages{
+        //checkout
+        stage('Checkout'){
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'SSH_EKSAD_JENKINS', url: 'http://192.168.1.103/root/devops.git']]])
+            }
+        }
+        //Build Module
+        stage('Build'){
+            steps{
+                sh '''
+                touch build
+                '''
+            }
+        }
+        //Push Jar to Nexus Repository
+        stage('Push to Nexus'){
+            steps{
+                sh '''
+                touch Push
+                '''
+            }
+        }
+        //Build Docker
+        stage('Build Docker'){
+            steps{
+                sh '''
+                touch builddocker
+                '''
+            }
+        }
+        //Push Docker Image to Nexus Repository
+        stage('Push Docker Image MasterData to Nexus'){
+            steps{
+                sh '''
+                touch dockerimage
+                '''
+            }
+        }
+
+    }
+}
+    
